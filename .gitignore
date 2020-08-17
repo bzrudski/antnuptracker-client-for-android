@@ -1,0 +1,16 @@
+NuptialLogAndroid/*.iml
+NuptialLogAndroid/.gradle
+NuptialLogAndroid/local.properties
+NuptialLogAndroid/.idea/caches
+NuptialLogAndroid/.idea/libraries
+NuptialLogAndroid/.idea/modules.xml
+NuptialLogAndroid/.idea/workspace.xml
+NuptialLogAndroid/.idea/navEditor.xml
+NuptialLogAndroid/.idea/assetWizardSettings.xml
+NuptialLogAndroid/.DS_Store
+NuptialLogAndroid/build
+NuptialLogAndroid/captures
+NuptialLogAndroid/.externalNativeBuild
+NuptialLogAndroid/app/src/debug/res/values/google_maps_api.xml
+NuptialLogAndroid/app/src/release/res/values/google_maps_api.xml
+.DS_Store

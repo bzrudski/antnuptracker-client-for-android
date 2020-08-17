@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true">
+
+    <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/verified_image"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/ic_antgreensmall"/>
+
+    <LinearLayout
+            android:id="@+id/labels_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/verified_image"
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:orientation="vertical">
+        <TextView
+                android:id="@+id/taxonomy_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/taxonomy_placeholder"
+                android:textStyle="bold|italic"
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
+                android:layout_marginBottom="@dimen/label_spacing"/>
+        <TextView
+                android:id="@+id/location_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loc_placeholder"
+                android:layout_marginBottom="@dimen/label_spacing"/>
+        <TextView
+                android:id="@+id/date_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date_placeholder"
+                android:layout_marginBottom="@dimen/label_spacing"/>
+
+        <TextView
+                android:id="@+id/author_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_antbluesmall"
+                android:drawablePadding="@dimen/ant_user_spacing"
+                android:gravity="center_vertical"
+                android:textColor="@color/colorPrimary"
+                android:text="@string/author_placeholder" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
