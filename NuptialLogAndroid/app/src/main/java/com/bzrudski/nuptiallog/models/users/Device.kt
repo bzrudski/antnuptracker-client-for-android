@@ -3,7 +3,10 @@ package com.bzrudski.nuptiallog.models.users
 import android.os.Build
 
 object Device {
-    val platform = "ANDROID"
+
+    const val DEVICE_ID_KEY = "USER_DEVICE_ID"
+
+    const val platform = "ANDROID"
     val model = "${Build.MANUFACTURER} ${Build.MODEL}"
     var deviceID: Int = 0
     var deviceToken:String? = null
