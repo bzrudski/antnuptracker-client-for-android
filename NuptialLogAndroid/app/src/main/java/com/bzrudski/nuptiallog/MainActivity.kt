@@ -1,8 +1,11 @@
 package com.bzrudski.nuptiallog
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +22,9 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
     }
 
     // FIELDS
-    private var mRecyclerView: RecyclerView? = null
-    private var mAdapter: FlightListAdapter? = null
-    private var mSwipeContainer: SwipeRefreshLayout? = null
+    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mAdapter: FlightListAdapter
+    private lateinit var mSwipeContainer: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,15 +34,15 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
         mRecyclerView = findViewById(R.id.recycler_view)
         mAdapter = FlightListAdapter(this)
 
-        mRecyclerView!!.adapter = mAdapter
+        mRecyclerView.adapter = mAdapter
 
-        mRecyclerView!!.layoutManager = LinearLayoutManager(this)
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        mRecyclerView!!.addItemDecoration(DividerItemDecoration(mRecyclerView!!.context, DividerItemDecoration.VERTICAL))
+        mRecyclerView.addItemDecoration(DividerItemDecoration(mRecyclerView.context, DividerItemDecoration.VERTICAL))
 
         FlightList.readObserver = this
 
-        mRecyclerView!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
@@ -53,7 +56,7 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
             }
         })
 
-        mSwipeContainer!!.setOnRefreshListener {
+        mSwipeContainer.setOnRefreshListener {
             FlightList.getNewFlights()
         }
 
@@ -61,9 +64,26 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
         FlightList.getNewFlights()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.list_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId){
+            R.id.action_account -> {
+                showLoginScreen()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
     override fun flightListRead() {
         runOnUiThread {
-            mRecyclerView!!.adapter!!.notifyDataSetChanged()
+            mRecyclerView.adapter!!.notifyDataSetChanged()
         }
 
         Log.d(LOG_TAG, "Flights read")
@@ -82,7 +102,7 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
     override fun flightListReadMore(n: Int) {
         Log.d(LOG_TAG, "Read $n new flights from the end")
         runOnUiThread {
-            mRecyclerView!!.adapter!!.notifyItemRangeInserted(FlightList.length - n, n)
+            mRecyclerView.adapter!!.notifyItemRangeInserted(FlightList.length - n, n)
         }
     }
 
@@ -98,9 +118,9 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
 
     override fun flightListGotNewFlights(n: Int) {
         runOnUiThread {
-            mSwipeContainer?.isRefreshing = false
-            mRecyclerView!!.adapter!!.notifyItemRangeInserted(0, n)
-            mRecyclerView!!.scrollToPosition(0)
+            mSwipeContainer.isRefreshing = false
+            mRecyclerView.adapter!!.notifyItemRangeInserted(0, n)
+            mRecyclerView.scrollToPosition(0)
         }
     }
 
@@ -113,7 +133,7 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
             is FlightList.GetNewFlightsErrors.GetError -> Log.d(LOG_TAG, "Get error ${error.status}")
         }
         runOnUiThread {
-            mSwipeContainer?.isRefreshing = false
+            mSwipeContainer.isRefreshing = false
         }
     }
 
@@ -123,5 +143,10 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
 
     override fun flightListCleared() {
         TODO("Not yet implemented")
+    }
+
+    fun showLoginScreen(){
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
     }
 }

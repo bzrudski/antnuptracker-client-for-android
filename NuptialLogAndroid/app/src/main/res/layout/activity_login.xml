@@ -1,9 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/lightBlue"
         tools:context=".LoginActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+            android:id="@+id/welcome_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_centerHorizontal="true"
+            android:text="@string/login_welcome"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/default_margin"/>
+
+    <EditText
+            android:id="@+id/username_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_username"
+            android:layout_marginHorizontal="@dimen/wide_margin"
+            android:layout_marginVertical="@dimen/default_margin"
+            android:layout_below="@id/welcome_label"
+            android:autofillHints="username"
+            android:inputType="text" />
+
+    <EditText
+            android:id="@+id/password_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_password"
+            android:layout_marginHorizontal="@dimen/wide_margin"
+            android:layout_marginVertical="@dimen/small_margin"
+            android:layout_below="@id/username_field"
+            android:inputType="textPassword"
+            android:autofillHints="password" />
+
+    <Button
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/password_field"
+            android:background="@color/darkBlue"
+            android:textColor="@android:color/white"
+            android:layout_marginVertical="@dimen/default_margin"
+            android:text="@string/login_button_message"
+            android:onClick="triggerLogin"/>
+
+    <Button
+            android:id="@+id/create_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/login_button"
+            android:background="@color/darkBlue"
+            android:textColor="@android:color/white"
+            android:layout_marginVertical="@dimen/default_margin"
+            android:paddingHorizontal="@dimen/default_margin"
+            android:text="@string/create_account_button_message"
+            android:onClick="launchCreateAccount"/>
+
+    <Button
+            android:id="@+id/forgot_password_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/create_button"
+            android:textColor="@color/darkBlue"
+            android:layout_marginVertical="@dimen/default_margin"
+            android:text="@string/forgot_password_button_message"
+            android:textStyle="bold"
+            android:onClick="launchForgotPassword"
+            style="@android:style/Widget.DeviceDefault.Button.Borderless"/>
+
+    <ImageView
+            android:id="@+id/ant_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/forgot_password_button"
+            android:contentDescription="@string/ant_image_description"
+            android:src="@drawable/ic_fullant"
+            android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

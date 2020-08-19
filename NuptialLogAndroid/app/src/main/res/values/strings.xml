@@ -85,4 +85,27 @@
     <string name="role_label">Role</string>
     <string name="institution_label">Institution/Affiliation</string>
     <string name="user_description_label">User Description</string>
+    <string name="ant_image_description">Cartoon of an ant reproductive</string>
+    <string name="login_welcome">Welcome to AntNupTracker</string>
+    <string name="enter_username">Enter username</string>
+    <string name="enter_password">Enter password</string>
+    <string name="login_button_message">Sign In</string>
+    <string name="create_account_button_message">Create Account</string>
+    <string name="forgot_password_button_message">Forgot Password?</string>
+    <string name="account_label">Account</string>
+    <string name="login_or_create">Log in or create account</string>
+    <string name="ok">OK</string>
+    <string name="empty_user_pass_title">Empty Username or Password</string>
+    <string name="empty_user_pass_message">Please enter your username and password before continuing.</string>
+    <string name="incorrect_credentials_title">Incorrect Credentials</string>
+    <string name="incorrect_credentials_message">Your login credentials failed. Please try again or reset your password.</string>
+    <string name="forbidden_access_title">Access Forbidden</string>
+    <string name="forbidden_access_message">Your account is not active. Please contact us to reactivate your account.</string>
+    <string name="json_parse_title">Parse Error</string>
+    <string name="json_parse_message">Error parsing the response from the server. Please try again later. If the problem persists, please contact us.</string>
+    <string name="no_response_title">Network Error</string>
+    <string name="no_response_message">No response from the server. Please check your network connection and try again.</string>
+    <string name="try_again">Try Again</string>
+    <string name="other_login_error_title">Other Login Error</string>
+    <string name="other_login_error_message">Error logging in (status=%d). Please try again later. If the problem persists, please contact us.</string>
 </resources>

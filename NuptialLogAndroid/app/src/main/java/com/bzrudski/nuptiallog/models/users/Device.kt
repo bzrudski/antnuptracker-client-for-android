@@ -8,7 +8,7 @@ object Device {
 
     const val platform = "ANDROID"
     val model = "${Build.MANUFACTURER} ${Build.MODEL}"
-    var deviceID: Int = 0
+    var deviceID: Long = 0
     var deviceToken:String? = null
 
     fun getInfoForDevice(): Map<String, String?>{

@@ -56,21 +56,31 @@ object WebInt {
             urlConnection.readTimeout = timeout
 
             if (method == HttpMethods.POST || method == HttpMethods.PUT){
+                val stringToWrite = body!!
+                urlConnection.setFixedLengthStreamingMode(stringToWrite.toByteArray().size)
+
                 urlConnection.doOutput = true
                 val outputStream = BufferedOutputStream(urlConnection.outputStream)
                 val streamWriter = BufferedWriter(OutputStreamWriter(outputStream))
 
-                val stringToWrite = body!!
-
-                urlConnection.setFixedLengthStreamingMode(stringToWrite.toByteArray().size)
-
                 streamWriter.write(stringToWrite)
+                streamWriter.flush()
                 streamWriter.close()
+            } else {
+                urlConnection.connect()
             }
 
-            urlConnection.connect()
+            val statusCode = urlConnection.responseCode
 
-            val inputStream = BufferedInputStream(urlConnection.inputStream)
+            // Based on code from
+            // https://stackoverflow.com/questions/25464118/post-request-gives-filenotfoundexception
+
+            val inputStream = if (statusCode / 100 == 2) {
+                BufferedInputStream(urlConnection.inputStream)
+            } else {
+                BufferedInputStream(urlConnection.errorStream)
+            }
+
             val reader = BufferedReader(InputStreamReader(inputStream))
 
             val contentList = reader.readLines()
@@ -86,7 +96,8 @@ object WebInt {
 
             val content = contentBuilder.toString()
 
-            val statusCode = urlConnection.responseCode
+
+            Log.d(LOG_TAG, "Network request finished with status $statusCode and results $content")
 
             callback(statusCode, content)
 

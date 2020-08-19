@@ -48,7 +48,7 @@ object SessionManager {
         @SerializedName("professional") val isProfessional: Boolean,
         val description: String,
         val institution: String,
-        val deviceID: Int
+        val deviceID: Long
     )
 
     fun login(username: String, password: String) {
@@ -64,46 +64,55 @@ object SessionManager {
         val body = if (deviceInfo.isNotEmpty()) FlightAppManager.gson.toJson(deviceInfo) else null
         val credentials = BasicAuth(username, password)
 
-        WebInt.request(
-            WebInt.HttpMethods.POST,
-            url,
-            body,
-            authentication = credentials,
-            callback = { status, responseData ->
+        Thread {
+            WebInt.request(
+                WebInt.HttpMethods.POST,
+                url,
+                body,
+                authentication = credentials,
+                callback = { status, responseData ->
 
-                when (status) {
-                    401 -> {
-                        loginObserver?.loggedInWithError(LoginError.IncorrectCredentials)
-                        return@request
+                    when (status) {
+                        401 -> {
+                            loginObserver?.loggedInWithError(LoginError.IncorrectCredentials)
+                            return@request
+                        }
+                        403 -> {
+                            loginObserver?.loggedInWithError(LoginError.ForbiddenAccess)
+                            return@request
+                        }
+                        200 -> {
+                        }
+                        else -> {
+                            loginObserver?.loggedInWithError(LoginError.OtherLoginError(status))
+                            return@request
+                        }
                     }
-                    403 -> {
-                        loginObserver?.loggedInWithError(LoginError.ForbiddenAccess)
-                        return@request
+
+                    try {
+                        val transaction =
+                            FlightAppManager.gson.fromJson(responseData, LoginResponse::class.java)
+
+                        Device.deviceID = transaction.deviceID
+
+                        val session = Session(
+                            username,
+                            transaction.isProfessional,
+                            transaction.description,
+                            transaction.institution,
+                            transaction.token
+                        )
+                        loginObserver?.loggedIn(session)
+
+                    } catch (e: JsonSyntaxException) {
+                        e.printStackTrace()
+                        loginObserver?.loggedInWithError(LoginError.JsonParseError)
                     }
-                    200 -> {
-                    }
-                    else -> {
-                        loginObserver?.loggedInWithError(LoginError.OtherLoginError(status))
-                        return@request
-                    }
-                }
-
-                try {
-                    val transaction = FlightAppManager.gson.fromJson(responseData, LoginResponse::class.java)
-
-                    Device.deviceID = transaction.deviceID
-
-                    val session = Session(username, transaction.isProfessional, transaction.description, transaction.institution, transaction.token)
-                    loginObserver?.loggedIn(session)
-
-                } catch (e: JsonSyntaxException) {
-                    loginObserver?.loggedInWithError(LoginError.JsonParseError)
-                }
-            },
-            errorHandler = {
-                loginObserver?.loggedInWithError(LoginError.NoResponse)
-            })
-
+                },
+                errorHandler = {
+                    loginObserver?.loggedInWithError(LoginError.NoResponse)
+                })
+        }.start()
     }
     // endregion LOGIN
 
@@ -122,24 +131,30 @@ object SessionManager {
     fun logout(session: Session){
         val url = UrlManager.getLogoutURL()
 
-        WebInt.request(WebInt.HttpMethods.POST, url, authentication = session.authentication, callback = {
-            status, responseData ->
+        Thread {
+            WebInt.request(
+                WebInt.HttpMethods.POST,
+                url,
+                authentication = session.authentication,
+                callback = { status, responseData ->
 
-            if (status == 401 || status == 403){
-                logoutObserver?.loggedOutWithError(LogoutError.AuthError)
-                return@request
-            }
+                    if (status == 401 || status == 403) {
+                        logoutObserver?.loggedOutWithError(LogoutError.AuthError)
+                        return@request
+                    }
 
-            if (status != 200 && status != 204){
-                logoutObserver?.loggedOutWithError(LogoutError.OtherLogoutError(status))
-                return@request
-            }
+                    if (status != 200 && status != 204) {
+                        logoutObserver?.loggedOutWithError(LogoutError.OtherLogoutError(status))
+                        return@request
+                    }
 
-            logoutObserver?.loggedOut()
+                    logoutObserver?.loggedOut()
 
-        }, errorHandler = {
-            logoutObserver?.loggedOutWithError(LogoutError.NoResponse)
-        })
+                },
+                errorHandler = {
+                    logoutObserver?.loggedOutWithError(LogoutError.NoResponse)
+                })
+        }.start()
     }
     // endregion LOGOUT
 
@@ -161,31 +176,46 @@ object SessionManager {
         val headers = HashMap<String, String>()
         headers["deviceID"] = Device.deviceID.toString()
 
-        WebInt.request(WebInt.HttpMethods.POST, url, authentication = session.authentication, headers = headers, callback = {
-            status, responseData ->
+        Thread {
+            WebInt.request(
+                WebInt.HttpMethods.POST,
+                url,
+                authentication = session.authentication,
+                headers = headers,
+                callback = { status, responseData ->
 
-            if (status == 401){
-                // CLEAR CREDENTIALS
-                verifyObserver?.sessionVerified(session, false, null)
-                return@request
-            }
+                    if (status == 401) {
+                        // CLEAR CREDENTIALS
+                        verifyObserver?.sessionVerified(session, false, null)
+                        return@request
+                    }
 
-            if (status != 200){
-                verifyObserver?.sessionVerifiedWithError(VerificationError.OtherVerificationError(status))
-                return@request
-            }
+                    if (status != 200) {
+                        verifyObserver?.sessionVerifiedWithError(
+                            VerificationError.OtherVerificationError(
+                                status
+                            )
+                        )
+                        return@request
+                    }
 
-            try {
-                val typeToken = object : TypeToken<HashMap<String, String>>(){}.type
-                val responseDictionary = FlightAppManager.gson.fromJson<HashMap<String, String>>(responseData, typeToken)
-                verifyObserver?.sessionVerified(session, true, responseDictionary)
-            } catch (e: JsonSyntaxException){
-                verifyObserver?.sessionVerifiedWithError(VerificationError.JsonError)
-            }
+                    try {
+                        val typeToken = object : TypeToken<HashMap<String, String>>() {}.type
+                        val responseDictionary =
+                            FlightAppManager.gson.fromJson<HashMap<String, String>>(
+                                responseData,
+                                typeToken
+                            )
+                        verifyObserver?.sessionVerified(session, true, responseDictionary)
+                    } catch (e: JsonSyntaxException) {
+                        verifyObserver?.sessionVerifiedWithError(VerificationError.JsonError)
+                    }
 
-        }, errorHandler = {
-            verifyObserver?.sessionVerifiedWithError(VerificationError.NoResponse)
-        })
+                },
+                errorHandler = {
+                    verifyObserver?.sessionVerifiedWithError(VerificationError.NoResponse)
+                })
+        }.start()
     }
     // endregion VERIFY
 
@@ -213,7 +243,7 @@ object SessionManager {
             .putString(Session.INSTITUTION_KEY, session!!.institution)
             .putString(Session.DESCRIPTION_KEY, session!!.description)
             .putBoolean(Session.PROFESSIONAL_KEY, (session!!.role == Role.MYRMECOLOGIST))
-            .putInt(Device.DEVICE_ID_KEY, Device.deviceID)
+            .putLong(Device.DEVICE_ID_KEY, Device.deviceID)
             .apply()
     }
 
@@ -235,9 +265,9 @@ object SessionManager {
         val description = sharedPreferences.getString(Session.DESCRIPTION_KEY, null)
         val institution = sharedPreferences.getString(Session.INSTITUTION_KEY, null)
 
-        val deviceID = sharedPreferences.getInt(Device.DEVICE_ID_KEY, -1)
+        val deviceID = sharedPreferences.getLong(Device.DEVICE_ID_KEY, -1)
 
-        if (username.isNullOrBlank() || token.isNullOrBlank() || description == null || institution == null || deviceID == -1){
+        if (username.isNullOrBlank() || token.isNullOrBlank() || description == null || institution == null || deviceID == (-1).toLong()){
             clearCredentials(context)
             return
         }
