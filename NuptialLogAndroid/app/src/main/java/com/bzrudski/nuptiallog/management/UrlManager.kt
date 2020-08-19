@@ -45,17 +45,17 @@ object UrlManager {
 
     fun urlForWeather(id: Int) : URL
     {
-        return URL(Uri.parse(urlForFlight(id).toString()).buildUpon().appendPath(weatherURL).toString())
+        return URL("${Uri.parse(urlForFlight(id).toString()).buildUpon().appendPath(weatherURL)}")
     }
 
     fun urlForChangelog(id: Int) : URL
     {
-        return URL(Uri.parse(urlForFlight(id).toString()).buildUpon().appendPath(historyURL).toString())
+        return URL("${Uri.parse(urlForFlight(id).toString()).buildUpon().appendPath(historyURL)}")
     }
 
     fun urlForValidate(id: Int) : URL
     {
-        return URL(Uri.parse(urlForFlight(id).toString()).buildUpon().appendPath(validateURL).toString())
+        return URL("${Uri.parse(urlForFlight(id).toString()).buildUpon().appendPath(validateURL)}/")
     }
 
     fun urlForCreate() : URL
@@ -70,17 +70,17 @@ object UrlManager {
 
     fun getLoginURL() : URL
     {
-        return URL("${baseUri.buildUpon().appendPath(loginURL)}")
+        return URL("${baseUri.buildUpon().appendPath(loginURL)}/")
     }
 
     fun getVerifyURL() : URL
     {
-        return URL("${Uri.parse("${getLoginURL()}").buildUpon().appendPath(verifyURL)}")
+        return URL("${Uri.parse("${getLoginURL()}").buildUpon().appendPath(verifyURL)}/")
     }
 
     fun getLogoutURL() : URL
     {
-        return URL("${baseUri.buildUpon().appendPath(logoutDeviceURL)}")
+        return URL("${baseUri.buildUpon().appendPath(logoutDeviceURL)}/")
     }
 
     fun getMySpeciesURL() : URL
