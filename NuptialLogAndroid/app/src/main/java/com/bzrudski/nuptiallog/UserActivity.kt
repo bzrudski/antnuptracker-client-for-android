@@ -1,8 +1,10 @@
 package com.bzrudski.nuptiallog
 
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -27,11 +29,18 @@ class UserActivity : AppCompatActivity() {
         val username = intent.getStringExtra(USERNAME_EXTRA)
 
         if (username == null){
-            // SHOW ALERT
-            finish()
+            AlertDialog.Builder(this)
+                .setTitle(R.string.no_user_selected)
+                .setNegativeButton(R.string.ok){ _: DialogInterface, _: Int ->
+                    finish()
+                }.show()
+
+            return
         } else {
             mUsername = username
         }
+
+        title = getString(R.string.user_title, mUsername)
 
         mRecyclerView = findViewById(R.id.recycler_view)
         mAdapter = UserAdapter(this, mUsername)

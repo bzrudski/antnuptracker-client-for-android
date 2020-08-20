@@ -89,8 +89,7 @@ class LoginActivity : AppCompatActivity(), SessionManager.LoginObserver {
 
     override fun loggedIn(session: Session) {
         Log.d(LOG_TAG, "Successfully logged in!")
-        observer?.loginScreenHasLoggedIn()
-        observer = null
+        setResult(RESULT_OK)
         finish()
     }
 

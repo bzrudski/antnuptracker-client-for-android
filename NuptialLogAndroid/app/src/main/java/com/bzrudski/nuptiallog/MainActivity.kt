@@ -6,25 +6,32 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bzrudski.nuptiallog.management.SessionManager
 import com.bzrudski.nuptiallog.models.flights.FlightList
 import com.bzrudski.nuptiallog.models.flights.observers.FlightReadObserver
 import com.bzrudski.nuptiallog.userinterface.FlightListAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity(), FlightReadObserver {
 
     companion object {
         private val LOG_TAG = MainActivity::class.java.simpleName
         const val FLIGHT_ID_EXTRA = "FLIGHT_ID"
+        const val LOGIN = 0
     }
 
     // FIELDS
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: FlightListAdapter
     private lateinit var mSwipeContainer: SwipeRefreshLayout
+    private lateinit var mFloatingActionButton: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +46,12 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
         mRecyclerView.layoutManager = LinearLayoutManager(this)
 
         mRecyclerView.addItemDecoration(DividerItemDecoration(mRecyclerView.context, DividerItemDecoration.VERTICAL))
+
+        mFloatingActionButton = findViewById(R.id.add_flight_button)
+
+        updateAddButtonState()
+
+        mFloatingActionButton.setOnClickListener(this::showAddFlightScreen)
 
         FlightList.readObserver = this
 
@@ -56,6 +69,10 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
             }
         })
 
+//        SessionManager.loadCredentials(this)
+
+        displayUserToast()
+
         mSwipeContainer.setOnRefreshListener {
             FlightList.getNewFlights()
         }
@@ -72,12 +89,30 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId){
             R.id.action_account -> {
-                showLoginScreen()
+                if (!SessionManager.isLoggedIn) showLoginScreen()
+                else showAccountScreen()
                 true
             }
             else -> {
                 super.onOptionsItemSelected(item)
             }
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode){
+            LOGIN -> {
+                if (resultCode == RESULT_OK) {
+                    Log.d(LOG_TAG, "Successfully logged in!")
+
+//                    if (SessionManager.isLoggedIn) SessionManager.saveCredentials(this)
+
+                    updateAddButtonState()
+                    displayUserToast()
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -145,8 +180,32 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
         TODO("Not yet implemented")
     }
 
-    fun showLoginScreen(){
+    private fun showLoginScreen(){
         val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
+        startActivityForResult(intent, LOGIN)
+    }
+
+    private fun showAccountScreen() {
+        Log.d(LOG_TAG, "Should be loading account details...")
+        Toast.makeText(this, "Account details go here", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun updateAddButtonState(){
+        mFloatingActionButton.visibility = if (SessionManager.isLoggedIn) View.VISIBLE else View.INVISIBLE
+    }
+
+    private fun showAddFlightScreen(view: View){
+        Toast.makeText(this, "Add a new flight", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun displayUserToast() {
+        val text = if (SessionManager.isLoggedIn){
+            getString(R.string.logged_in_as, SessionManager.session!!.username)
+        } else {
+            getString(R.string.not_logged_in)
+        }
+
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+        Snackbar.make(mRecyclerView, text, Snackbar.LENGTH_LONG).show()
     }
 }

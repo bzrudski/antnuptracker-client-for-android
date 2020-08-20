@@ -16,6 +16,8 @@ object SessionManager {
 
     var session: Session? = null
 
+    val isLoggedIn: Boolean get() = session != null
+
     // region DEVICE TOKEN
     // PUT IN DEVICE TOKEN... EVENTUALLY
     // endregion DEVICE TOKEN
@@ -102,6 +104,8 @@ object SessionManager {
                             transaction.institution,
                             transaction.token
                         )
+
+                        this.session = session
                         loginObserver?.loggedIn(session)
 
                     } catch (e: JsonSyntaxException) {
@@ -149,7 +153,7 @@ object SessionManager {
                     }
 
                     logoutObserver?.loggedOut()
-
+                    clearSession()
                 },
                 errorHandler = {
                     logoutObserver?.loggedOutWithError(LogoutError.NoResponse)
@@ -206,6 +210,7 @@ object SessionManager {
                                 responseData,
                                 typeToken
                             )
+                        this.session = session
                         verifyObserver?.sessionVerified(session, true, responseDictionary)
                     } catch (e: JsonSyntaxException) {
                         verifyObserver?.sessionVerifiedWithError(VerificationError.JsonError)
