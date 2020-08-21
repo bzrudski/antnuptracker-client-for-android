@@ -55,7 +55,7 @@
     <string name="comment_placeholder">Comment goes here</string>
     <string name="image_description">Flight image</string>
     <string name="title_activity_location_selection">Map</string>
-    <string name="flight_detail">Flight Detail</string>
+    <string name="flight_detail">Flight Details for Flight %d</string>
     <string name="weather_description_header">Weather Description</string>
     <string name="weather_description">Description</string>
     <string name="weather_long_desc">Full Description</string>
@@ -114,4 +114,11 @@
     <string name="user_title">Profile: %s</string>
     <string name="logged_in_as">You are signed in as %s.</string>
     <string name="not_logged_in">You are not signed in.</string>
+    <string name="no_flight_selected">No Flight Selected</string>
+    <string name="please_select_flight">Please select a flight before continuing.</string>
+    <string name="please_select_user">Please select a user before continuing.</string>
+    <string name="invalid_genus">Invalid genus selected</string>
+    <string name="please_enter_genus">Please select a genus</string>
+    <string name="please_enter_species">Please enter a valid species name</string>
+    <string name="invalid_species">Invalid species name</string>
 </resources>

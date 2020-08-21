@@ -18,10 +18,13 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name=".LoginActivity"
-                android:label="@string/sign_in_title"/>
+        <activity android:name=".AddFlightActivity"></activity>
+        <activity
+                android:name=".LoginActivity"
+                android:label="@string/sign_in_title" />
         <activity android:name=".UserActivity" />
-        <activity android:name=".WeatherActivity"
+        <activity
+                android:name=".WeatherActivity"
                 android:label="@string/weather_title" />
         <activity
                 android:name=".ChangelogActivity"

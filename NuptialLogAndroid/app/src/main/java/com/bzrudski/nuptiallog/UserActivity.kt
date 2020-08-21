@@ -31,6 +31,7 @@ class UserActivity : AppCompatActivity() {
         if (username == null){
             AlertDialog.Builder(this)
                 .setTitle(R.string.no_user_selected)
+                .setMessage(R.string.please_select_user)
                 .setNegativeButton(R.string.ok){ _: DialogInterface, _: Int ->
                     finish()
                 }.show()

@@ -18,27 +18,35 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="@dimen/default_margin"/>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/username_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/enter_username"
             android:layout_marginHorizontal="@dimen/wide_margin"
             android:layout_marginVertical="@dimen/default_margin"
-            android:layout_below="@id/welcome_label"
-            android:autofillHints="username"
-            android:inputType="text" />
+            android:layout_below="@id/welcome_label">
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="username"
+                android:inputType="text"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/enter_password"
             android:layout_marginHorizontal="@dimen/wide_margin"
             android:layout_marginVertical="@dimen/small_margin"
-            android:layout_below="@id/username_field"
-            android:inputType="textPassword"
-            android:autofillHints="password" />
+            android:layout_below="@id/username_field">
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:autofillHints="password"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
             android:id="@+id/login_button"

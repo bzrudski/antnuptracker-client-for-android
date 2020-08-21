@@ -15,6 +15,8 @@ import androidx.appcompat.app.AlertDialog
 import com.bzrudski.nuptiallog.management.SessionManager
 import com.bzrudski.nuptiallog.management.UrlManager
 import com.bzrudski.nuptiallog.models.users.Session
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class LoginActivity : AppCompatActivity(), SessionManager.LoginObserver {
 
@@ -29,8 +31,8 @@ class LoginActivity : AppCompatActivity(), SessionManager.LoginObserver {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        usernameEditText = findViewById(R.id.username_field)
-        passwordEditText = findViewById(R.id.password_field)
+        usernameEditText = (findViewById<TextInputLayout>(R.id.username_field)).editText!!
+        passwordEditText = (findViewById<TextInputLayout>(R.id.password_field)).editText!!
 
         SessionManager.loginObserver = this
     }

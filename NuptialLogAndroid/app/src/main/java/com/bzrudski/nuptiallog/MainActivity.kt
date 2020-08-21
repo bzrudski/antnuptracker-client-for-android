@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bzrudski.nuptiallog.management.SessionManager
 import com.bzrudski.nuptiallog.models.flights.FlightList
+import com.bzrudski.nuptiallog.models.flights.TaxonomyManager
 import com.bzrudski.nuptiallog.models.flights.observers.FlightReadObserver
 import com.bzrudski.nuptiallog.userinterface.FlightListAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
 
         mFloatingActionButton = findViewById(R.id.add_flight_button)
 
-        updateAddButtonState()
+//        updateAddButtonState()
 
         mFloatingActionButton.setOnClickListener(this::showAddFlightScreen)
 
@@ -68,6 +69,10 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
                 }
             }
         })
+
+        Thread {
+            TaxonomyManager.initialize(this)
+        }.start()
 
 //        SessionManager.loadCredentials(this)
 
@@ -196,6 +201,8 @@ class MainActivity : AppCompatActivity(), FlightReadObserver {
 
     private fun showAddFlightScreen(view: View){
         Toast.makeText(this, "Add a new flight", Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, AddFlightActivity::class.java)
+        startActivity(intent)
     }
 
     private fun displayUserToast() {

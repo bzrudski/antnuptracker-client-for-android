@@ -1,10 +1,12 @@
 package com.bzrudski.nuptiallog
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,9 +33,17 @@ class FlightDetailActivity : AppCompatActivity() {
         mFlightId = intent.getIntExtra(MainActivity.FLIGHT_ID_EXTRA, -1)
 
         if (mFlightId == -1){
-            // Will display an alert
-            finish()
+            AlertDialog.Builder(this)
+                .setTitle(R.string.no_flight_selected)
+                .setMessage(R.string.please_select_flight)
+                .setNegativeButton(R.string.ok){ _: DialogInterface, _: Int ->
+                    finish()
+                }.show()
+
+            return
         }
+
+        title = getString(R.string.flight_detail, mFlightId)
 
         mRecyclerView = findViewById(R.id.recycler_view)
         mAdapter = FlightDetailAdapter(this, mFlightId)
